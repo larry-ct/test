@@ -217,7 +217,7 @@ async def logon_main( workList, uid, headless):
                             workList[uid].msg = "需要短信验证"
 
                             await sendSMS(page)
-                            await asyncio.sleep(30)
+                            await asyncio.sleep(10)
                             await typeSMScode(page, workList, uid)
                             sms_sent = True
                         else:
