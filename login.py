@@ -139,7 +139,7 @@ async def logon_main( workList, uid, headless):
     # page = await browser.newPage()
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=headless,
+            headless=True,
             args=[
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
