@@ -77,7 +77,7 @@ async def logon_main( workList, uid, headless):
     async def isStillInSMSCodeSentPage(page):
         try:
             # 尝试获取元素
-            element = await page.locator('xpath=//*[@id="header"]/span[2]').element_handle()
+            element = await page.locator('xpath=//*[@id="header"]/span[2]').element_handle(timeout=4)
 
             if element:
                 # 获取元素的文本内容
@@ -96,7 +96,7 @@ async def logon_main( workList, uid, headless):
     async def needResendSMSCode(page):
         try:
             # 使用 locator 获取元素的句柄
-            element_handle = await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/button').element_handle()
+            element_handle = await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/button').element_handle(timeout=4)
             if element_handle:
                 # 使用 evaluate 获取元素的文本内容
                 text = await page.evaluate("(element) => element.textContent", element_handle)
@@ -206,7 +206,7 @@ async def logon_main( workList, uid, headless):
                     await asyncio.sleep(3)
 
                 if not sms_sent:
-                    if await page.locator('.sub-title').element_handle():
+                    if await page.locator('.sub-title').element_handle(timeout=3):
                         print("进入选择短信验证分支")
                         if not workList[uid].isAuto:
                             workList[uid].status = "SMS"
@@ -255,8 +255,8 @@ async def logon_main( workList, uid, headless):
 
                 await asyncio.sleep(1)
             except Exception as e:
-                print("异常退出")
-                print(e)
+                # print("异常退出")
+                # print(e)
                 continue
                 await browser.close()
                 raise e
