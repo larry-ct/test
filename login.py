@@ -207,16 +207,19 @@ async def logon_main( workList, uid, headless):
                 if not sms_sent:
 
                     if await page.query_selector('button.getMsg-btn.timer.active[report-eventid="reportEventid"]'):
+                        button = await page.query_selector('button.getMsg-btn.timer.active[report-eventid="reportEventid"]')
+                        text_content = await button.text_content()
+                        if text_content != "获取验证码":
+                            continue
                         print("进入选择短信验证分支")
                         if not workList[uid].isAuto:
                             workList[uid].status = "SMS"
                             workList[uid].msg = "需要短信验证"
 
                             await sendSMS(page)
-                            await asyncio.sleep(20)
+                            await asyncio.sleep(30)
                             await typeSMScode(page, workList, uid)
                             sms_sent = True
-
                         else:
                             workList[uid].status = "error"
                             workList[uid].msg = "自动续期时不能使用短信验证"
@@ -319,18 +322,18 @@ async def sendSMSDirectly(page):
 async def sendSMS(page):
     async def preSendSMS(page):
         print("进行发送验证码前置操作")
-        await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/span/a').wait_for()
+        # await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/span/a').wait_for()
 
-        await page.waitFor(random.randint(1, 3) * 1000)
-        elements = await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/span/a').element_handles()
+        # await page.waitFor(random.randint(1, 3) * 1000)
+        # elements = await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/span/a').element_handles()
 
-        await elements[0].click()
-        await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/button').wait_for()
+        # await elements[0].click()
+        await page.wait_for_selector('button.getMsg-btn.timer.active[report-eventid="reportEventid"]')
+        # await page.locator('xpath=//*[@id="app"]/div/div[2]/div[3]/button').wait_for()
         await asyncio.sleep(random.randint(1, 3))
-
-        elements = await page.locator('xpath=//*[@id="app"]/div/div[2]/div[2]/button').element_handles()
-        if elements:
-            await elements[0].click()
+        element = await page.query_selector('button.getMsg-btn.timer.active[report-eventid="reportEventid"]')
+        if element:
+            await element.click()
         # 等待 3 秒
         await asyncio.sleep(3)
 
@@ -342,14 +345,15 @@ async def sendSMS(page):
             captcha_modal = await page.locator('xpath=//*[@id="captcha_modal"]/div/div[3]/div').element_handles()
             captcha_button = await page.locator('xpath=//*[@id="captcha_modal"]/div/div[3]/button').element_handles()
 
-            if captcha_modal:
+            if captcha_modal and len(captcha_button)==0:
                 await verification(page)
+                await asyncio.sleep(3)
             elif captcha_button:
                 await verification_shape(page)
+                await asyncio.sleep(3)
             else:
                 break
-
-            await asyncio.sleep(3)
+            # await asyncio.sleep(3)
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -358,7 +362,6 @@ async def sendSMS(page):
 
 async def typeSMScode(page, workList, uid):
     print("开始输入验证码")
-
     async def get_verification_code(workList, uid):
         print("开始从全局变量获取验证码")
         retry = 60
@@ -436,7 +439,7 @@ async def verification(page):
     image = Image.open("image.png")
     resized_image = image.resize((width, height))
     resized_image.save("image.png")
-    template_src = await page.locator("#small_img").evaluate('el => el.getAttribute("src")')
+    template_src = await page.locator("#small_img").evaluate('el => el.getAttribute("src")',timeout=10)
     request.urlretrieve(template_src, "template.png")
     width = await page.evaluate(
         '() => { return document.getElementById("small_img").clientWidth; }'
