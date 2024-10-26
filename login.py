@@ -160,6 +160,8 @@ async def logon_main( workList, uid, headless):
             )
         except Exception as e:
             print("打开页面出错")
+            workList[uid].status = "error"
+            workList[uid].msg = "页面出错"
             print(e)
             return
         await typeuser(page, usernum, passwd)
