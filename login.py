@@ -204,53 +204,53 @@ async def logon_main( workList, uid, headless):
                     await verification_shape(page)
                     await asyncio.sleep(3)
 
-                if not sms_sent:
-                    if await page.locator('.sub-title').element_handle(timeout=3):
-                        print("进入选择短信验证分支")
-                        if not workList[uid].isAuto:
-                            workList[uid].status = "SMS"
-                            workList[uid].msg = "需要短信验证"
-
-                            await sendSMS(page)
-                            await asyncio.sleep(20)
-                            await typeSMScode(page, workList, uid)
-                            sms_sent = True
-
-                        else:
-                            workList[uid].status = "error"
-                            workList[uid].msg = "自动续期时不能使用短信验证"
-                            print("自动续期时不能使用短信验证")
-                            break
-                    elif await isSendSMSDirectly(page):
-                        print("进入直接发短信分支")
-                        if not workList[uid].isAuto:
-                            workList[uid].status = "SMS"
-                            workList[uid].msg = "需要短信验证"
-                            await sendSMSDirectly(page)
-                            await asyncio.sleep(20)
-                            await typeSMScode(page, workList, uid)
-                            sms_sent = True
-
-                        else:
-                            workList[uid].status = "error"
-                            workList[uid].msg = "自动续期时不能使用短信验证"
-                            print("自动续期时不能使用短信验证")
-                            break
-                else:
-                    if await isStillInSMSCodeSentPage(page):
-                        print("进入验证码错误分支")
-                        IN_SMS_TIMES += 1
-                        if IN_SMS_TIMES % 3 == 0:
-                            workList[uid].SMS_CODE = None
-                            workList[uid].status = "wrongSMS"
-                            workList[uid].msg = "短信验证码错误，请重新输入"
-                            await typeSMScode(page, workList, uid)
-
-                    elif await needResendSMSCode(page):
-                        print("进入验证码超时分支")
-                        workList[uid].status = "error"
-                        workList[uid].msg = "验证码超时，请重新开始"
-                        break
+                # if not sms_sent:
+                #     if await page.locator('.sub-title').element_handle(timeout=3):
+                #         print("进入选择短信验证分支")
+                #         if not workList[uid].isAuto:
+                #             workList[uid].status = "SMS"
+                #             workList[uid].msg = "需要短信验证"
+                #
+                #             await sendSMS(page)
+                #             await asyncio.sleep(20)
+                #             await typeSMScode(page, workList, uid)
+                #             sms_sent = True
+                #
+                #         else:
+                #             workList[uid].status = "error"
+                #             workList[uid].msg = "自动续期时不能使用短信验证"
+                #             print("自动续期时不能使用短信验证")
+                #             break
+                #     elif await isSendSMSDirectly(page):
+                #         print("进入直接发短信分支")
+                #         if not workList[uid].isAuto:
+                #             workList[uid].status = "SMS"
+                #             workList[uid].msg = "需要短信验证"
+                #             await sendSMSDirectly(page)
+                #             await asyncio.sleep(20)
+                #             await typeSMScode(page, workList, uid)
+                #             sms_sent = True
+                #
+                #         else:
+                #             workList[uid].status = "error"
+                #             workList[uid].msg = "自动续期时不能使用短信验证"
+                #             print("自动续期时不能使用短信验证")
+                #             break
+                # else:
+                #     if await isStillInSMSCodeSentPage(page):
+                #         print("进入验证码错误分支")
+                #         IN_SMS_TIMES += 1
+                #         if IN_SMS_TIMES % 3 == 0:
+                #             workList[uid].SMS_CODE = None
+                #             workList[uid].status = "wrongSMS"
+                #             workList[uid].msg = "短信验证码错误，请重新输入"
+                #             await typeSMScode(page, workList, uid)
+                #
+                #     elif await needResendSMSCode(page):
+                #         print("进入验证码超时分支")
+                #         workList[uid].status = "error"
+                #         workList[uid].msg = "验证码超时，请重新开始"
+                #         break
 
                 await asyncio.sleep(1)
             except Exception as e:
@@ -691,7 +691,9 @@ async def verification_shape(page):
 
             # 点击确定
             await button.click()
-            await asyncio.sleep(random.uniform(1, 3))
+            await asyncio.sleep(random.uniform(5, 10))
+            print("过图形结束")
+            return
         else:
             shape_type = word.split("请选出图中的")[1]
             if shape_type in supported_types:
