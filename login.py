@@ -188,14 +188,14 @@ async def logon_main( workList, uid, headless):
                     workList[uid].status = "pending"
                     workList[uid].msg = "正在过滑块检测"
                     await verification(page)
-                    await asyncio.sleep(5)
+                    await asyncio.sleep(3)
 
                 elif await page.locator('//*[@id="captcha_modal"]/div/div[3]/button').count()>0:
                     print("进入点形状、颜色验证分支")
                     workList[uid].status = "pending"
                     workList[uid].msg = "正在过形状、颜色检测"
                     await verification_shape(page)
-                    await asyncio.sleep(5)
+                    await asyncio.sleep(3)
 
                 if not sms_sent:
                     if await page.locator('.sub-title').element_handle():
@@ -679,11 +679,11 @@ async def verification_shape(page):
                 x, y = image_top_left_x + center_x, image_top_left_y + center_y
                 # 点击图片
                 await page.mouse.click(x, y)
-                await asyncio.sleep(random.uniform(1, 4))
+                await asyncio.sleep(random.uniform(1, 2))
 
             # 点击确定
             await button.click()
-            await asyncio.sleep(random.uniform(2, 4))
+            await asyncio.sleep(random.uniform(1, 3))
         else:
             shape_type = word.split("请选出图中的")[1]
             if shape_type in supported_types:
