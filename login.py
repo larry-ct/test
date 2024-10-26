@@ -154,7 +154,6 @@ async def logon_main( workList, uid, headless):
 
         await page.set_viewport_size({"width": 360, "height": 640})
         try:
-            print("11111111111")
             await page.goto("https://plogin.m.jd.com/login/login?appid=300&returnurl=https%3A%2F%2Fm.jd.com%2F&source=wq_passport",timeout=60000)
         except Exception as e:
             print("打开页面出错")
@@ -167,7 +166,7 @@ async def logon_main( workList, uid, headless):
         IN_SMS_TIMES = 0
         start_time = datetime.datetime.now()
 
-        while True:
+        for i in range(15):
             try:
                 now_time = datetime.datetime.now()
                 print("循环检测中...")
@@ -255,8 +254,8 @@ async def logon_main( workList, uid, headless):
 
                 await asyncio.sleep(1)
             except Exception as e:
-                # print("异常退出")
-                # print(e)
+                print("异常退出")
+                print(e)
                 continue
                 await browser.close()
                 raise e
