@@ -148,12 +148,19 @@ async def logon_main( workList, uid, headless):
                 "--disable-software-rasterizer",
             ]
         )
+
+
         page = await browser.new_page()
 
         await page.set_viewport_size({"width": 360, "height": 640})
-        await page.goto(
-            "https://plogin.m.jd.com/login/login?appid=300&returnurl=https%3A%2F%2Fm.jd.com%2F&source=wq_passport"
-        )
+        try:
+            await page.goto(
+                "https://plogin.m.jd.com/login/login?appid=300&returnurl=https%3A%2F%2Fm.jd.com%2F&source=wq_passport"
+            )
+        except Exception as e:
+            print("打开页面出错")
+            print(e)
+            return
         await typeuser(page, usernum, passwd)
 
         IN_SMS_TIMES = 0
