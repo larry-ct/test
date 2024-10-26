@@ -166,7 +166,7 @@ async def logon_main( workList, uid, headless):
         IN_SMS_TIMES = 0
         start_time = datetime.datetime.now()
 
-        for i in range(15):
+        for i in range(100):
             try:
                 now_time = datetime.datetime.now()
                 print("循环检测中...")
@@ -227,7 +227,7 @@ async def logon_main( workList, uid, headless):
                             workList[uid].status = "SMS"
                             workList[uid].msg = "需要短信验证"
                             await sendSMSDirectly(page)
-                            await page.waitFor(3000)
+                            await asyncio.sleep(20)
                             await typeSMScode(page, workList, uid)
                             sms_sent = True
 
@@ -254,6 +254,7 @@ async def logon_main( workList, uid, headless):
 
                 await asyncio.sleep(1)
             except Exception as e:
+                await asyncio.sleep(2)
                 # print("异常退出")
                 # print(e)
                 continue
