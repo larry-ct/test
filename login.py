@@ -154,7 +154,7 @@ async def logon_main( workList, uid, headless):
 
         await page.set_viewport_size({"width": 360, "height": 640})
         try:
-            await page.goto("https://plogin.m.jd.com/login/login?appid=300&returnurl=https%3A%2F%2Fm.jd.com%2F&source=wq_passport",timeout=60000)
+            await page.goto("https://plogin.m.jd.com/login/login?appid=300&returnurl=https%3A%2F%2Fm.jd.com%2F&source=wq_passport",timeout=100000)
         except Exception as e:
             print("打开页面出错")
             workList[uid].status = "error"
