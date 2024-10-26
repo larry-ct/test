@@ -254,8 +254,8 @@ async def logon_main( workList, uid, headless):
 
                 await asyncio.sleep(1)
             except Exception as e:
-                print("异常退出")
-                print(e)
+                # print("异常退出")
+                # print(e)
                 continue
                 await browser.close()
                 raise e
